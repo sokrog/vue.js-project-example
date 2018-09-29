@@ -16,33 +16,14 @@ class Ad {
 
 export default {
   state: {
-    ads: [
-      {
-        title: 'First ad',
-        description: 'Description',
-        promo: true,
-        imageSrc: 'http://widefon.com/_ld/146/99600770.jpg',
-        id: '1'
-      },
-      {
-        title: 'Second ad',
-        description: 'Description',
-        promo: true,
-        imageSrc: 'https://1k.by/images/site/imagespage/news/20171124/m8f182a4c3.jpg',
-        id: '2'
-      },
-      {
-        title: 'Third ad',
-        description: 'Description',
-        promo: false,
-        imageSrc: 'https://content.choiz.me/uploads/2017-09/b3a18d1e3b7421d7f80bfc4fae5f1198.png',
-        id: '3'
-      }
-    ]
+    ads: []
   },
   mutations: {
     createAd (state, payload) {
       state.ads.push(payload)
+    },
+    loadAds (state, payload) {
+      state.ads = payload
     }
   },
   actions: {
@@ -64,6 +45,37 @@ export default {
           ...newAd,
           id: ad.key
         })
+      } catch (error) {
+        commit('setError', error.message)
+        commit('setLoading', false)
+        throw error
+      }
+    },
+    async fetchAds ({commit}) {
+      commit('clearError')
+      commit('setLoading', true)
+
+      const resultAds = []
+
+      try {
+        const fbVal = await firebase.database().ref('ads').once('value')
+        const ads = fbVal.val()
+
+        Object.keys(ads).forEach(key => {
+          const ad = ads[key]
+          resultAds.push(
+            new Ad(
+              ad.title,
+              ad.description,
+              ad.ownerId,
+              ad.imageSrc,
+              ad.promo,
+              key)
+          )
+        })
+
+        commit('loadAds', resultAds)
+        commit('setLoading', false)
       } catch (error) {
         commit('setError', error.message)
         commit('setLoading', false)
