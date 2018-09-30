@@ -22,15 +22,22 @@
         </v-form>
         <v-layout row class="mb-3">
           <v-flex xs12>
-            <v-btn class="warning">
+            <v-btn class="warning" @click="triggerUpload">
               Upload
               <v-icon right dark>cloud_upload</v-icon>
+              <input
+                ref="fileInput"
+                type="file"
+                style="display: none;"
+                accept="image/*"
+                @change="onFileChange"
+              >
             </v-btn>
           </v-flex>
         </v-layout>
         <v-layout row>
           <v-flex xs12>
-            <img src="http://widefon.com/_ld/146/99600770.jpg" height="100">
+            <img :src="imageSrc" height="100">
           </v-flex>
         </v-layout>
         <v-layout row>
@@ -47,7 +54,7 @@
             <v-spacer></v-spacer>
             <v-btn
               :loading="loading"
-              :disabled="!valid || loading"
+              :disabled="!valid || !image || loading"
               class="success"
               @click="createAd"
             >Create ad</v-btn>
@@ -65,7 +72,9 @@
         valid: false,
         title: '',
         description: '',
-        promo: false
+        promo: false,
+        image: null,
+        imageSrc: ''
       }
     },
     computed: {
@@ -75,13 +84,13 @@
     },
     methods: {
       createAd () {
-        if (this.$refs.form.validate()) {
+        if (this.$refs.form.validate() && this.image) {
           // logic
           const ad = {
             title: this.title,
             description: this.description,
             promo: this.promo,
-            imageSrc: 'http://cdn.akamai.steamstatic.com/steam/apps/529910/ss_8f857625492fae3680bfe598f4fb29d19a65c76b.jpg'
+            image: this.image
           }
 
           this.$store.dispatch('createAd', ad)
@@ -90,6 +99,19 @@
             })
             .catch(() => {})
         }
+      },
+      triggerUpload () {
+        this.$refs.fileInput.click()
+      },
+      onFileChange (event) {
+        const file = event.target.files[0]
+
+        const reader = new FileReader()
+        reader.onload = e => {
+          this.imageSrc = reader.result
+        }
+        reader.readAsDataURL(file)
+        this.image = file
       }
     }
   }
