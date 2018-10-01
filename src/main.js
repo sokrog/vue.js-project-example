@@ -12,18 +12,19 @@ import 'firebase/firestore'
 import BuyModalComponent from '@/components/shared/BuyModal'
 
 import 'vuetify/dist/vuetify.min.css'
-import colors from 'vuetify/es5/util/colors'
+import './stylus/main.styl'
+// import colors from 'vuetify/es5/util/colors'
 
 Vue.use(Vuetify, {
-  theme: {
-    primary: colors.lightGreen.darken2,
-    secondary: colors.lime.accent4,
-    accent: colors.lightGreen.accent4,
-    error: colors.red.darken1,
-    warning: colors.yellow.accent3,
-    info: colors.blue.base,
-    success: colors.green.base
-  }
+  // theme: {
+  //   primary: colors.lightGreen.darken2,
+  //   secondary: colors.lime.accent4,
+  //   accent: colors.lightGreen.accent4,
+  //   error: colors.red.darken1,
+  //   warning: colors.yellow.accent3,
+  //   info: colors.blue.base,
+  //   success: colors.green.base
+  // }
 })
 Vue.component('app-buy-modal', BuyModalComponent)
 Vue.config.productionTip = false
