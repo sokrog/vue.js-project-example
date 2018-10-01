@@ -57,7 +57,7 @@
           <v-progress-circular
             :size="100"
             :width="4"
-            color="purple"
+            color="blue"
             indeterminate
           ></v-progress-circular>
         </v-flex>
